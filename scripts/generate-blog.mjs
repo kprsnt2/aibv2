@@ -48,7 +48,8 @@ async function processDrafts() {
         console.log(`Processing draft: ${file}`);
         const draftContent = fs.readFileSync(path.join(DRAFTS_DIR, file), 'utf8');
 
-        const systemPrompt = `You are an expert tech blogger. Convert the following notes/draft into a comprehensive, well-structured, engaging markdown blog post. The blog must include a markdown frontmatter with 'title', 'date' (ISO format like ${new Date().toISOString()}), and 'excerpt'. Make the title catchy but professional. Expand on the ideas provided. If the draft references supporting imagery or data, write seamlessly around it or format it well.
+        const systemPrompt = `You are an expert tech blogger. Convert the following notes/draft into a comprehensive, well-structured, engaging markdown blog post. The blog must include a markdown frontmatter with 'title', 'date' (ISO format like ${new Date().toISOString()}), and 'excerpt'. 
+IMPORTANT: You MUST wrap all string values in the YAML frontmatter (title, excerpt, etc.) in double quotes to prevent YAML parsing errors with special characters. Make the title catchy but professional. Expand on the ideas provided. If the draft references supporting imagery or data, write seamlessly around it or format it well.
 
 Draft:
 ${draftContent}
