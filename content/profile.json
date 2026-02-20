@@ -1,0 +1,18 @@
+{
+  "name": "Your Name",
+  "profession": "AI Developer & Tech Writer",
+  "about": "I build intelligent applications and share my insights on the intersection of AI and software engineering. I am deeply passionate about automating workflows and open-source contributions.",
+  "socials": {
+    "twitter": "https://twitter.com/yourhandle",
+    "github": "https://github.com/yourhandle",
+    "linkedin": "https://linkedin.com/in/yourhandle"
+  },
+  "resume": "https://example.com/resume.pdf",
+  "projects": [
+    {
+      "title": "AIBlog Platform",
+      "description": "An open-source AI-generated blog platform.",
+      "link": "https://github.com/yourhandle/aiblog"
+    }
+  ]
+}
