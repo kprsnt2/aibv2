@@ -20,7 +20,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     }
 
     return (
-        <main className="min-h-screen bg-neutral-950 text-neutral-50 px-6 py-12 md:py-24">
+        <main className="min-h-screen px-6 py-12 md:py-24">
             <article className="max-w-3xl mx-auto space-y-8">
                 <div>
                     <Button asChild variant="ghost" className="mb-8 -ml-4 text-neutral-400 hover:text-white">

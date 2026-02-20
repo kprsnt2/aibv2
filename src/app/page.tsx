@@ -10,7 +10,7 @@ export default function Home() {
   const recentBlogs = getBlogPosts().slice(0, 3);
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-50 px-6 py-12 md:py-24">
+    <main className="min-h-screen px-6 py-12 md:py-24">
       <div className="max-w-4xl mx-auto space-y-24">
 
         {/* Hero Section */}
