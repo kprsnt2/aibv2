@@ -1,9 +1,10 @@
+---
 title: Who won the group stage in t20 worldcup?
 tags: Cricket, T20, India, Sports, Sports Industry, CWCT20
 industry: Sports
 date: 18 February 2026
 insights: Definatepy association nations won the hearts of crowd and everyone, some great individual perfromance but it as team wise due to lack of international exposure and it was a good learning curve for these teams and this worldcup help to penetrate the cricket interest around the world.
-
+---
 ## My Notes
 
 Cricket worldcup t20 group stage is at near end, by this time blog was posted almost 7 teams already confirmed and only one position left for super 8 stage.
