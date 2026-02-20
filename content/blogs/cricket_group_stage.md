@@ -1,7 +1,7 @@
-```yaml
-title: T20 World Cup Group Stage Unpacked: The Underdogs Who Stole Our Hearts
+---
+title: "T20 World Cup Group Stage Unpacked: The Underdogs Who Stole Our Hearts"
 date: 2026-02-18T10:00:00.000Z
-excerpt: As the T20 World Cup group stage concludes, we delve into the surprising eliminations, the unforgettable heroics of associate nations, and the individual brilliance that captivated audiences worldwide, proving that cricket's global footprint is expanding.
+excerpt: "As the T20 World Cup group stage concludes, we delve into the surprising eliminations, the unforgettable heroics of associate nations, and the individual brilliance that captivated audiences worldwide, proving that cricket's global footprint is expanding."
 tags:
   - Cricket
   - T20
