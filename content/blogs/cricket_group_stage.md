@@ -1,4 +1,3 @@
-``yaml
 ---
 title: "T20 World Cup Group Stage Unpacked: Surprises, Superstars, and Super 8s!"
 date: "2026-02-18T00:01:25.778Z"

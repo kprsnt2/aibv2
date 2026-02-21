@@ -71,8 +71,12 @@ Output exactly the markdown with the frontmatter (no wrapping markdown formattin
                 process.exit(1);
             }
 
-            // Cleanup response formatting in case the model adds backticks
-            finalContent = finalContent.replace(/^```[a-zA-Z]*\n?/g, '').replace(/\n?```$/g, '').trim();
+            // Cleanup response formatting in case the model adds backticks or text before the frontmatter
+            const firstDash = finalContent.indexOf('---');
+            if (firstDash !== -1) {
+                finalContent = finalContent.substring(firstDash);
+            }
+            finalContent = finalContent.replace(/\n```\s*$/g, '').trim();
 
             fs.writeFileSync(postPath, finalContent, 'utf8');
             console.log(`Successfully generated ${postPath}`);

@@ -1,4 +1,3 @@
-``
 ---
 title: "T20 World Cup Group Stage Unpacked: Upsets, Heroes, and the Global Game's Ascent"
 date: "2026-02-18T10:30:00.000Z"
