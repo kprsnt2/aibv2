@@ -1,4 +1,4 @@
-```yaml
+``yaml
 ---
 title: "T20 World Cup Group Stage: The Unforeseen Upsets, Nail-biting Thrillers, and the Rise of Cricket's New Frontiers"
 date: "2026-02-18T14:30:00.000Z"

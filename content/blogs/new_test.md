@@ -1,4 +1,4 @@
-```yaml
+``yaml
 ---
 title: "T20 World Cup Group Stage: A Whirlwind of Surprises and Stellar Performances"
 date: "2026-02-21T10:00:00.000Z"

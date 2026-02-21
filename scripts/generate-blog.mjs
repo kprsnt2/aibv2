@@ -72,7 +72,7 @@ Output exactly the markdown with the frontmatter (no wrapping markdown formattin
             }
 
             // Cleanup response formatting in case the model adds backticks
-            finalContent = finalContent.replace(/^```markdown\n?/g, '').replace(/\n?```$/g, '').trim();
+            finalContent = finalContent.replace(/^```[a-zA-Z]*\n?/g, '').replace(/\n?```$/g, '').trim();
 
             fs.writeFileSync(postPath, finalContent, 'utf8');
             console.log(`Successfully generated ${postPath}`);
