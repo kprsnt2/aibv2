@@ -31,28 +31,28 @@ export default function Home() {
           <div className="flex flex-wrap gap-4 pt-4">
             {profile.socials.github && (
               <Button asChild variant="outline" size="sm">
-                <Link href={profile.socials.github} target="_blank">
+                <Link href={profile.socials.github} target="_blank" rel="noopener noreferrer">
                   <Github className="w-4 h-4 mr-2" /> GitHub
                 </Link>
               </Button>
             )}
             {profile.socials.twitter && (
               <Button asChild variant="outline" size="sm">
-                <Link href={profile.socials.twitter} target="_blank">
+                <Link href={profile.socials.twitter} target="_blank" rel="noopener noreferrer">
                   <Twitter className="w-4 h-4 mr-2" /> Twitter
                 </Link>
               </Button>
             )}
             {profile.socials.linkedin && (
               <Button asChild variant="outline" size="sm">
-                <Link href={profile.socials.linkedin} target="_blank">
+                <Link href={profile.socials.linkedin} target="_blank" rel="noopener noreferrer">
                   <Linkedin className="w-4 h-4 mr-2" /> LinkedIn
                 </Link>
               </Button>
             )}
             {profile.resume && (
               <Button asChild size="sm">
-                <Link href={profile.resume} target="_blank">
+                <Link href={profile.resume} target="_blank" rel="noopener noreferrer">
                   <FileText className="w-4 h-4 mr-2" /> Resume
                 </Link>
               </Button>
@@ -74,7 +74,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <Button asChild variant="link" className="px-0 text-white">
-                    <Link href={project.link} target="_blank">
+                    <Link href={project.link} target="_blank" rel="noopener noreferrer">
                       View Project <ArrowRight className="w-4 h-4 ml-1" />
                     </Link>
                   </Button>

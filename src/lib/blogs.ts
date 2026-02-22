@@ -15,6 +15,14 @@ export interface BlogPost {
   htmlContent?: string;
 }
 
+/**
+ * Sanitize a slug to prevent path traversal attacks.
+ * Only allows alphanumeric characters, hyphens, and underscores.
+ */
+function sanitizeSlug(slug: string): string {
+  return slug.replace(/[^a-zA-Z0-9_-]/g, '');
+}
+
 export function getBlogPosts(): BlogPost[] {
   if (!fs.existsSync(blogsDirectory)) {
     return [];
@@ -47,19 +55,29 @@ export function getBlogPosts(): BlogPost[] {
 }
 
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
-  const fullPath = path.join(blogsDirectory, `${slug}.md`);
+  // Sanitize slug to prevent path traversal (e.g. ../../etc/passwd)
+  const safeSlug = sanitizeSlug(slug);
+  if (!safeSlug || safeSlug !== slug) return null;
+
+  const fullPath = path.join(blogsDirectory, `${safeSlug}.md`);
+
+  // Double-check the resolved path is still within the blogs directory
+  const resolvedPath = path.resolve(fullPath);
+  if (!resolvedPath.startsWith(path.resolve(blogsDirectory))) return null;
+
   if (!fs.existsSync(fullPath)) return null;
 
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const matterResult = matter(fileContents);
 
+  // sanitize: true prevents XSS from AI-generated or user-supplied markdown
   const processedContent = await remark()
-    .use(html)
+    .use(html, { sanitize: true })
     .process(matterResult.content);
   const htmlContent = processedContent.toString();
 
   return {
-    slug,
+    slug: safeSlug,
     title: matterResult.data.title || 'Untitled',
     date: matterResult.data.date || new Date().toISOString(),
     excerpt: matterResult.data.excerpt || '',
@@ -67,3 +85,4 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     htmlContent,
   };
 }
+
