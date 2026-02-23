@@ -1,36 +1,138 @@
-# AIBlog Platform
+# AIBlog — AI-Powered Blog Generator & Portfolio
 
-A Next.js, shadcn/ui powered blog platform that automatically generates polished blog posts from rough drafts using AI (Gemini or Claude).
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkprsnt2%2Faibv2&env=GEMINI_API_KEY&envDescription=API%20key%20for%20AI%20blog%20generation&envLink=https%3A%2F%2Fmakersuite.google.com%2Fapp%2Fapikey&project-name=ai-blog&repository-name=ai-blog)
 
-## Features
-- **Modern UI**: Built with Next.js App Router, Tailwind CSS, and shadcn/ui.
-- **Automated Blogging**: Drop a `.md` or `.txt` file with rough notes in `blog_drafts/`. Push to GitHub, and a GitHub Action will write a full blog post, save it to `content/blogs/`, and deploy! 
-- **Easy Customization**: Edit `content/profile.json` to update your portfolio details instantly without touching code.
+An open-source, AI-powered blog generator and personal portfolio template. Write your notes, push a file — AI generates a polished blog post and auto-deploys to Vercel.
 
-## Getting Started
+## ✨ Features
 
-1. Clone this repository.
-2. Run `npm install`
-3. Edit `content/profile.json` with your details.
-4. Run `npm run dev` to see your portfolio and blog running locally.
+### Must-Have
+- 🚀 **One-click Deploy** — Deploy to Vercel with a single click
+- 🌓 **Dark/Light Theme** — Toggle between themes with next-themes
+- 🔍 **Blog Search** — Fuzzy search across titles, tags, and excerpts
+- 📄 **SEO** — Auto-generated og:title, og:description, Twitter cards per post
+- 📡 **RSS Feed** — Auto-generated at `/feed.xml`
+- 🗺️ **Sitemap** — Auto-generated at `/sitemap.xml`
+- ⏱️ **Reading Time** — Estimated reading time on every post
+- 🏷️ **Tags** — Filter posts by tag with a dedicated `/tags` page
 
-## Setting up AI Automation
+### Nice-to-Have
+- 💬 **Comments** — Giscus (GitHub Discussions) integration
+- 📧 **Newsletter** — Email subscription component (integrate Buttondown/Resend)
+- 📑 **Table of Contents** — Auto-generated sidebar TOC with scroll spy
+- 🔗 **Social Share** — Twitter, LinkedIn, and copy-link buttons
+- 🤖 **AI Attribution** — Shows which AI model generated each post
+- 🌐 **Multi-language** — AI generates blogs in any language (set `language: Spanish` in draft)
 
-To let the AI write your blogs automatically via GitHub Actions:
-1. Go to your repository **Settings > Secrets and variables > Actions**.
-2. Add a new repository secret (you only need one, the script prioritizes Gemini):
-   - `GEMINI_API_KEY` (Get from [Google AI Studio](https://aistudio.google.com/))
-   - `ANTHROPIC_API_KEY` (Get from [Anthropic Console](https://console.anthropic.com/))
-3. Under **Settings > Actions > General > Workflow permissions**, ensure **Read and write permissions** is selected so the action can commit the generated markdown back.
+## 🚀 Quick Start
 
-## Writing a Post
-1. Create a rough notes file in the `blog_drafts` folder, e.g., `my-new-idea.txt`. Include any links to images or videos (markdown syntax works great) and write your raw thoughts.
-2. Commit and push it to GitHub.
-3. The GitHub Action will run, rewrite your notes into a cohesive article, generate `my-new-idea.md` in `content/blogs`, and commit it.
-4. If deployed on Vercel, it will automatically trigger a new deployment to publish the new blog post!
+### 1. Clone & Deploy
+Click the **Deploy with Vercel** button above, or:
 
-## Deployment
-Deploy easily to Vercel:
-1. Push to GitHub.
-2. Import the repository in [Vercel](https://vercel.com).
-3. Your site is live!
+```bash
+git clone https://github.com/kprsnt2/aibv2.git
+cd aibv2
+npm install
+npm run dev
+```
+
+### 2. Configure Your Profile
+Edit `content/profile.json` with your info:
+```json
+{
+  "name": "Your Name",
+  "profession": "Your Role",
+  "about": "A brief about you...",
+  "socials": {
+    "twitter": "https://twitter.com/you",
+    "github": "https://github.com/you",
+    "linkedin": "https://linkedin.com/in/you"
+  },
+  "resume": "https://example.com/resume.pdf",
+  "projects": [
+    { "title": "Project", "description": "Description", "link": "https://..." }
+  ]
+}
+```
+
+### 3. Write a Blog Draft
+Create a `.md` or `.txt` file in `blog_drafts/`:
+
+```markdown
+My thoughts on the future of AI...
+
+- Key point 1
+- Key point 2
+- Supporting data or links
+```
+
+Optional frontmatter hints:
+```yaml
+language: Spanish
+```
+
+### 4. Push & Publish
+```bash
+git add blog_drafts/my-post.md
+git commit -m "new draft"
+git push
+```
+
+GitHub Actions will:
+1. Detect the new draft
+2. Generate a full blog post using AI (Gemini or Claude)
+3. Save it to `content/blogs/`
+4. Vercel auto-deploys the updated site
+
+## 🔧 Configuration
+
+### Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `GEMINI_API_KEY` | Yes* | Google Gemini API key |
+| `ANTHROPIC_API_KEY` | No* | Anthropic Claude API key (fallback) |
+| `NEXT_PUBLIC_SITE_URL` | No | Your deployed site URL (for SEO) |
+
+*At least one AI API key is required.
+
+### Giscus Comments (Optional)
+1. Enable [Giscus](https://giscus.app) on your repo
+2. Update the `GiscusComments` props in `src/app/blog/[slug]/page.tsx`
+
+### Newsletter (Optional)
+The newsletter component is a UI placeholder. Integrate with:
+- [Buttondown](https://buttondown.email)
+- [Resend](https://resend.com)
+- [ConvertKit](https://convertkit.com)
+
+## 📁 Project Structure
+
+```
+├── blog_drafts/          # Drop your .md/.txt drafts here
+├── content/
+│   ├── blogs/            # AI-generated blog posts
+│   └── profile.json      # Your personal info
+├── scripts/
+│   └── generate-blog.mjs # AI blog generation script
+├── src/
+│   ├── app/              # Next.js pages
+│   │   ├── blog/         # Blog list + post pages
+│   │   ├── tags/         # Tag listing + filter pages
+│   │   ├── feed.xml/     # RSS feed
+│   │   └── sitemap.ts    # Sitemap
+│   ├── components/       # UI components
+│   └── lib/              # Data utilities
+└── .github/workflows/    # GitHub Actions
+```
+
+## 🛡️ Security
+
+- XSS protection via sanitized HTML rendering
+- Path traversal prevention on slug parameters
+- Security headers (CSP, X-Frame-Options, etc.)
+- GitHub Actions pinned to commit SHAs
+
+## 📝 License
+
+MIT — use it, fork it, make it yours!

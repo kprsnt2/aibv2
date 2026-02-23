@@ -3,7 +3,6 @@ import path from 'path';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Anthropic from '@anthropic-ai/sdk';
 import dotenv from 'dotenv';
-import matter from 'gray-matter';
 
 dotenv.config();
 
@@ -17,7 +16,7 @@ async function generateWithGemini(prompt) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(prompt);
-    return result.response.text();
+    return { text: result.response.text(), modelName: "Gemini 2.5 Flash" };
 }
 
 async function generateWithClaude(prompt) {
@@ -27,7 +26,14 @@ async function generateWithClaude(prompt) {
         max_tokens: 4000,
         messages: [{ role: "user", content: prompt }]
     });
-    return msg.content[0].text;
+    return { text: msg.content[0].text, modelName: "Claude 3.5 Sonnet" };
+}
+
+function detectLanguage(content) {
+    // Check for language hints in the draft frontmatter or content
+    const langMatch = content.match(/language:\s*(\w+)/i);
+    if (langMatch) return langMatch[1];
+    return 'English';
 }
 
 async function processDrafts() {
@@ -47,39 +53,65 @@ async function processDrafts() {
 
         console.log(`Processing draft: ${file}`);
         const draftContent = fs.readFileSync(path.join(DRAFTS_DIR, file), 'utf8');
+        const language = detectLanguage(draftContent);
 
-        const systemPrompt = `You are an expert tech blogger. Convert the following notes/draft into a comprehensive, well-structured, engaging markdown blog post. The blog must include a markdown frontmatter with 'title', 'date' (ISO format like ${new Date().toISOString()}), and 'excerpt'. 
-IMPORTANT: You MUST wrap all string values in the YAML frontmatter (title, excerpt, etc.) in double quotes to prevent YAML parsing errors with special characters. Make the title catchy but professional. Expand on the ideas provided. If the draft references supporting imagery or data, write seamlessly around it or format it well.
+        const systemPrompt = `You are an expert blogger. Convert the following notes/draft into a comprehensive, well-structured, engaging markdown blog post written in ${language}.
+
+The blog MUST start with a YAML frontmatter block wrapped in --- delimiters. The frontmatter MUST include these fields:
+- title: (catchy, professional title in double quotes)
+- date: (ISO format like "${new Date().toISOString()}")
+- excerpt: (one-liner summary in double quotes)
+- tags: (array like ["Tag1", "Tag2"])
+
+IMPORTANT RULES:
+1. You MUST wrap ALL string values in YAML (title, excerpt) in double quotes.
+2. Do NOT wrap the output in markdown code blocks (no \`\`\`markdown or \`\`\`yaml).
+3. Start your response directly with --- on the first line.
+4. Expand on the ideas provided with depth and insight.
+5. If the draft references images, videos, or data, incorporate them naturally.
 
 Draft:
 ${draftContent}
-
-Output exactly the markdown with the frontmatter (no wrapping markdown formatting like \`\`\`markdown, just the raw text).
 `;
 
         let finalContent = '';
+        let modelName = '';
 
         try {
             if (process.env.GEMINI_API_KEY) {
                 console.log('Using Gemini API...');
-                finalContent = await generateWithGemini(systemPrompt);
+                const result = await generateWithGemini(systemPrompt);
+                finalContent = result.text;
+                modelName = result.modelName;
             } else if (process.env.ANTHROPIC_API_KEY) {
                 console.log('Using Claude API...');
-                finalContent = await generateWithClaude(systemPrompt);
+                const result = await generateWithClaude(systemPrompt);
+                finalContent = result.text;
+                modelName = result.modelName;
             } else {
                 console.error('No AI API key found (GEMINI_API_KEY or ANTHROPIC_API_KEY).');
                 process.exit(1);
             }
 
-            // Cleanup response formatting in case the model adds backticks or text before the frontmatter
+            // Cleanup: strip everything before the first ---
             const firstDash = finalContent.indexOf('---');
             if (firstDash !== -1) {
                 finalContent = finalContent.substring(firstDash);
             }
+            // Remove trailing code block markers
             finalContent = finalContent.replace(/\n```\s*$/g, '').trim();
 
+            // Inject AI model attribution into frontmatter
+            const secondDash = finalContent.indexOf('---', 3);
+            if (secondDash !== -1) {
+                finalContent =
+                    finalContent.substring(0, secondDash) +
+                    `aiModel: "${modelName}"\n` +
+                    finalContent.substring(secondDash);
+            }
+
             fs.writeFileSync(postPath, finalContent, 'utf8');
-            console.log(`Successfully generated ${postPath}`);
+            console.log(`Successfully generated ${postPath} (by ${modelName})`);
 
         } catch (error) {
             console.error(`Failed to process ${file}:`, error);

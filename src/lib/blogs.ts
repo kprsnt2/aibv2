@@ -13,14 +13,19 @@ export interface BlogPost {
   excerpt: string;
   content: string;
   htmlContent?: string;
+  tags: string[];
+  readingTime: number;
+  aiModel?: string;
 }
 
-/**
- * Sanitize a slug to prevent path traversal attacks.
- * Only allows alphanumeric characters, hyphens, and underscores.
- */
 function sanitizeSlug(slug: string): string {
   return slug.replace(/[^a-zA-Z0-9_-]/g, '');
+}
+
+function calculateReadingTime(text: string): number {
+  const wordsPerMinute = 200;
+  const words = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / wordsPerMinute));
 }
 
 export function getBlogPosts(): BlogPost[] {
@@ -36,12 +41,21 @@ export function getBlogPosts(): BlogPost[] {
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const matterResult = matter(fileContents);
 
+      const tags: string[] = Array.isArray(matterResult.data.tags)
+        ? matterResult.data.tags
+        : typeof matterResult.data.tags === 'string'
+          ? matterResult.data.tags.split(',').map((t: string) => t.trim())
+          : [];
+
       return {
         slug,
         title: matterResult.data.title || 'Untitled',
         date: matterResult.data.date || new Date().toISOString(),
         excerpt: matterResult.data.excerpt || '',
         content: matterResult.content,
+        tags,
+        readingTime: calculateReadingTime(matterResult.content),
+        aiModel: matterResult.data.aiModel || undefined,
       };
     });
 
@@ -54,27 +68,41 @@ export function getBlogPosts(): BlogPost[] {
   });
 }
 
+export function getAllTags(): { tag: string; count: number }[] {
+  const posts = getBlogPosts();
+  const tagMap: Record<string, number> = {};
+  posts.forEach((post) => {
+    post.tags.forEach((tag) => {
+      tagMap[tag] = (tagMap[tag] || 0) + 1;
+    });
+  });
+  return Object.entries(tagMap)
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
-  // Sanitize slug to prevent path traversal (e.g. ../../etc/passwd)
   const safeSlug = sanitizeSlug(slug);
   if (!safeSlug || safeSlug !== slug) return null;
 
   const fullPath = path.join(blogsDirectory, `${safeSlug}.md`);
-
-  // Double-check the resolved path is still within the blogs directory
   const resolvedPath = path.resolve(fullPath);
   if (!resolvedPath.startsWith(path.resolve(blogsDirectory))) return null;
-
   if (!fs.existsSync(fullPath)) return null;
 
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const matterResult = matter(fileContents);
 
-  // sanitize: true prevents XSS from AI-generated or user-supplied markdown
   const processedContent = await remark()
     .use(html, { sanitize: true })
     .process(matterResult.content);
   const htmlContent = processedContent.toString();
+
+  const tags: string[] = Array.isArray(matterResult.data.tags)
+    ? matterResult.data.tags
+    : typeof matterResult.data.tags === 'string'
+      ? matterResult.data.tags.split(',').map((t: string) => t.trim())
+      : [];
 
   return {
     slug: safeSlug,
@@ -83,6 +111,8 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     excerpt: matterResult.data.excerpt || '',
     content: matterResult.content,
     htmlContent,
+    tags,
+    readingTime: calculateReadingTime(matterResult.content),
+    aiModel: matterResult.data.aiModel || undefined,
   };
 }
-
