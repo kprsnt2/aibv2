@@ -1,6 +1,6 @@
 # AIBlog — AI-Powered Blog Generator & Portfolio
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkprsnt2%2Faibv2&env=GEMINI_API_KEY&envDescription=API%20key%20for%20AI%20blog%20generation&envLink=https%3A%2F%2Fmakersuite.google.com%2Fapp%2Fapikey&project-name=ai-blog&repository-name=ai-blog)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkprsnt2%2Faibv2&project-name=ai-blog&repository-name=ai-blog)
 
 An open-source, AI-powered blog generator and personal portfolio template. Write your notes, push a file — AI generates a polished blog post and auto-deploys to Vercel.
 
