@@ -14,9 +14,9 @@ if (!fs.existsSync(POSTS_DIR)) fs.mkdirSync(POSTS_DIR, { recursive: true });
 
 async function generateWithGemini(prompt) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
     const result = await model.generateContent(prompt);
-    return { text: result.response.text(), modelName: "Gemini 2.5 Flash" };
+    return { text: result.response.text(), modelName: "Gemini Flash Latest" };
 }
 
 async function generateWithClaude(prompt) {
